@@ -5,9 +5,10 @@ class ServerlessForm {
   domain;
   timestamp;
   netliftReferer;
-  constructor({headers, body}, domain) {
+  constructor({headers, body, httpMethod}, domain) {
     this.netlifyHeaders = headers;
     this.netlifyBody = body;
+    this.netlifyHttpMethod = httpMethod;
     this.domain = `https://${domain.replace('www.', '')}/`;
     this.netlifyReferer = `${headers.referer.replace('www.', '')}`;
     this.qsService = qs;
@@ -45,6 +46,10 @@ class ServerlessForm {
       },
       body: JSON.stringify({}),
     };
+  }
+
+  get isValidRequest() {
+    return this.netlifyHttpMethod == 'POST' && this.netlifyBody;
   }
 
   get isValidDomain() {

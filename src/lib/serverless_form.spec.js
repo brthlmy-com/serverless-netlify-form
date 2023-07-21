@@ -110,6 +110,35 @@ describe('Serverless Form', () => {
     });
   });
 
+  describe('.isValidRequest', () => {
+    test('with httpMethod POST and body', () => {
+      const subject = new ServerlessForm(
+        {...netlifyHeaders, httpMethod: 'POST'},
+        domain,
+      );
+      expect(subject.isValidRequest).toBeTruthy();
+    });
+
+    ['GET', 'PUT', 'DELETE'].forEach(requestMethod =>
+      test(`with httpMethod ${requestMethod} and body`, () => {
+        const subject = new ServerlessForm(
+          {...netlifyHeaders, httpMethod: requestMethod},
+          'tld.com',
+        );
+        expect(subject.isValidRequest).toBeFalsy();
+      }),
+    );
+
+    ['POST', 'GET', 'PUT', 'DELETE'].forEach(requestMethod =>
+      test(`with httpMethod ${requestMethod} and missing body`, () => {
+        const subject = new ServerlessForm(
+          {...netlifyHeaders, httpMethod: requestMethod, body: ''},
+          'tld.com',
+        );
+        expect(subject.isValidRequest).toBeFalsy();
+      }),
+    );
+  });
 
   describe('.isValidDomain', () => {
     test('with matching domain', () => {
