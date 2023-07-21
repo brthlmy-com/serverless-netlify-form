@@ -30,7 +30,7 @@ const {
   GOOGLE_SERVICE_ACCOUNT_EMAIL,
   GOOGLE_PRIVATE_KEY,
   SPREADSHEET_ID,
-  SPREADSHEET_SHEET_TITLE,
+  SPREADSHEET_SHEET_FORM_TITLE,
   APEX_DOMAIN,
 } = process.env;
 
@@ -41,7 +41,7 @@ exports.handler = async (event, context) => {
       googleServiceAccountEmail: GOOGLE_SERVICE_ACCOUNT_EMAIL,
       googlePrivateKey: GOOGLE_PRIVATE_KEY,
       spreadsheetId: SPREADSHEET_ID,
-      spreadsheetSheetTitle: SPREADSHEET_SHEET_TITLE,
+      spreadsheetSheetTitle: SPREADSHEET_SHEET_FORM_TITLE,
       apexDomain: APEX_DOMAIN,
     });
     return result;
