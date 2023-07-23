@@ -1,6 +1,6 @@
 {
   "name": "@brthlmy/serverless-netlify-form",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Serverless netlify function to save forms in google sheets",
   "type": "module",
   "homepage": "https://brthlmy.com?utm_source=package-json",

@@ -60,6 +60,22 @@ class ServerlessForm {
     return this.qsService.parse(this.netlifyBody);
   }
 
+  toString() {
+    const {timestamp, formName, formData, country, locale} = this.sheetRow;
+
+    const messageFieldsValues = Object.entries(JSON.parse(formData))
+      .map(item => `<b>${item[0]}</b>: ${item[1]}`)
+      .join('\n')
+      .slice(0, 1000);
+
+    return [
+      `Date: ${timestamp}`,
+      `Name: ${formName}`,
+      `Origin: ${country} / ${locale}`,
+      messageFieldsValues,
+    ].join('\n');
+  }
+
   get sheetRow() {
     this.timestamp = new Date().toISOString();
 

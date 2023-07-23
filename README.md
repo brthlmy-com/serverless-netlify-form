@@ -44,7 +44,11 @@ exports.handler = async (event, context) => {
       spreadsheetSheetTitle: SPREADSHEET_SHEET_FORM_TITLE,
       apexDomain: APEX_DOMAIN,
     });
-    return result;
+
+    if(result.message) {
+      // send notification
+    }
+    return result.redirectResponse;
   } catch(e) {
     console.log('debug',e);
   }

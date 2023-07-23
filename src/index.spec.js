@@ -71,7 +71,7 @@ describe('Serverless Netlify Form', () => {
       return {handle: () => Promise.resolve('google_service')};
     });
     // ServerlessForm.mockImplementation(() => {
-      // return {fake: 'google_service'};
+    // return {fake: 'google_service'};
     // });
 
     const subject = jest.mock('./lib/serverless_form');
@@ -99,7 +99,7 @@ describe('Serverless Netlify Form', () => {
         return {handle: () => Promise.resolve('google_service')};
       });
       const subject = await handler(validNetlifyEvent, config);
-      expect(subject).toEqual({
+      expect(subject.redirectResponse).toEqual({
         statusCode: 302,
         headers: {
           Location: 'https://domain/success.html',
@@ -109,12 +109,20 @@ describe('Serverless Netlify Form', () => {
       });
     });
 
+    test('is a valid request with post method and correct body, has message', async () => {
+      SpreadsheetHelper.mockImplementation(() => {
+        return {handle: () => Promise.resolve('google_service')};
+      });
+      const subject = await handler(validNetlifyEvent, config);
+      expect(subject.message).toBeDefined();
+    });
+
     test('invalid request with post method and empty body', async () => {
       const subject = await handler(
         {...validNetlifyEvent, body: '', httpMethod: ''},
         config,
       );
-      expect(subject).toEqual({
+      expect(subject.redirectResponse).toEqual({
         statusCode: 400,
         headers: {
           'Access-Control-Allow-Origin': '*',
@@ -124,6 +132,7 @@ describe('Serverless Netlify Form', () => {
           status: 'invalid-method',
         }),
       });
+      expect(subject.message).not.toBeDefined();
     });
 
     ['GET', 'PUT', 'DELETE'].forEach(requestMethod => {
@@ -132,7 +141,7 @@ describe('Serverless Netlify Form', () => {
           {...validNetlifyEvent, httpMethod: requestMethod},
           config,
         );
-        expect(subject).toEqual({
+        expect(subject.redirectResponse).toEqual({
           statusCode: 400,
           headers: {
             'Access-Control-Allow-Origin': '*',
@@ -142,6 +151,7 @@ describe('Serverless Netlify Form', () => {
             status: 'invalid-method',
           }),
         });
+      expect(subject.message).not.toBeDefined();
       });
     });
 
@@ -150,10 +160,11 @@ describe('Serverless Netlify Form', () => {
         {...validNetlifyEvent, headers: {referer: 'invalid.com'}},
         config,
       );
-      expect(subject).toEqual({
+      expect(subject.redirectResponse).toEqual({
         body: '{"status":"I\'m a teapot"}',
         statusCode: 418,
       });
+      expect(subject.message).not.toBeDefined();
     });
   });
 });

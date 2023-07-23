@@ -3,6 +3,10 @@ import {SpreadsheetHelper} from './lib/spreadsheet_helper.js';
 import {GoogleSpreadsheet} from 'google-spreadsheet';
 import {JWT} from 'google-auth-library';
 
+function wrapResponse(redirectResponse, message = undefined) {
+  return { redirectResponse, message };
+}
+
 async function handler(
   event,
   {
@@ -12,6 +16,7 @@ async function handler(
     spreadsheetSheetTitle,
     apexDomain,
   },
+  callback,
 ) {
   if (
     googleServiceAccountEmail &&
@@ -36,14 +41,14 @@ async function handler(
     );
 
     if (!serverlessForm.isValidRequest) {
-      return ServerlessForm.invalidMethodResponse;
+      return wrapResponse(ServerlessForm.invalidMethodResponse);
     } else if (!serverlessForm.isValidDomain) {
-      return ServerlessForm.teapotResponse;
+      return wrapResponse(ServerlessForm.teapotResponse);
     } else {
       await spreadsheetHelper.handle(serverlessForm.sheetRow);
-      return serverlessForm.redirectResponse;
+      return wrapResponse(serverlessForm.redirectResponse, serverlessForm.toString());
     }
   }
-  return ServerlessForm.teapotResponse;
+  return wrapResponse(ServerlessForm.teapotResponse);
 }
 export {handler};

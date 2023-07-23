@@ -185,4 +185,23 @@ describe('Serverless Form', () => {
       expect(subject.sheetRow).toMatchObject(expectedSheetRow);
     });
   });
+
+  describe('.toString', () => {
+    test('formats to string', () => {
+      const mockToISOString = jest
+        .spyOn(Date.prototype, 'toISOString')
+        .mockImplementation(() => 'timestamp');
+      const mock = jest.fn();
+      qs.parse = mock.mockReturnValue(expectedParsedBodyValues);
+      const subject = new ServerlessForm(netlifyHeaders, domain);
+      const expectedToString = [
+        `Date: timestamp`,
+        `Name: ${expectedParsedBodyValues['form-name']}`,
+        `Origin: ${netlifyHeaders.headers['x-country']} / ${netlifyHeaders.headers['x-language']}`,
+        '<b>someField</b>: someValue',
+        '<b>tos</b>: agreed',
+      ].join('\n');
+      expect(subject.toString()).toEqual(expectedToString);
+    });
+  });
 });
